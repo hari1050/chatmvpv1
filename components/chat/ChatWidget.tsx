@@ -532,7 +532,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ settings, user_id }) => {
 
   return (
     <div 
-      className="flex flex-col h-[600px] rounded-2xl shadow-2xl overflow-hidden border border-gray-700"
+      className="flex flex-col h-[600px] rounded-2xl shadow-2xl overflow-hidden"
       style={{ 
         backgroundColor: settings?.chatBackgroundColor || '#1e1e1e',
         fontFamily: settings?.fontFamily || 'Inter'

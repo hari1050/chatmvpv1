@@ -10,7 +10,7 @@ export default function WidgetClient({
   chatbot: Chatbot;
 }) {
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-white rounded-8xl overflow-hidden">
       <ChatWidget 
         settings={chatbot.settings} 
         user_id={chatbot.user_id}
