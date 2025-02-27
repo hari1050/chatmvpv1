@@ -3,17 +3,17 @@ import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
 import WidgetClient from './WidgetClient';
-import { use } from "react";
 
 export const dynamic = 'force-dynamic';
 
 export default async function WidgetPage({
   params
 }: {
-  params: Promise<{ chatbotId: string }>
+  params: { chatbotId: string }
 }) {
+  const { chatbotId } = params;
+  
   try {
-    const { chatbotId } = use(params);
     const cookieStore = cookies();
     const supabase = createServerComponentClient({ cookies: () => cookieStore });
 
