@@ -9,9 +9,9 @@ export const dynamic = 'force-dynamic';
 export default async function WidgetPage({
   params
 }: {
-  params: { chatbotId: string }
+  params: Promise<{ chatbotId: string }>
 }) {
-  const { chatbotId } = params;
+  const { chatbotId } = await params;
   
   try {
     const cookieStore = cookies();
