@@ -56,7 +56,7 @@ export default function KnowledgeBasePage() {
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
+  
     const allowedTypes = [
       'text/plain',
       'application/pdf',
@@ -67,17 +67,17 @@ export default function KnowledgeBasePage() {
       'application/x-rtf',
       'text/richtext'
     ];
-
+  
     if (!allowedTypes.includes(file.type)) {
       toast.error('Only text documents are supported (.txt, .pdf, .doc, .docx, .rtf)');
       return;
     }
-
+  
     try {
       setIsUploading(true);
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
-
+  
       // Create temporary source
       const tempSource: KnowledgeSource = {
         id: Math.random().toString(),
@@ -86,29 +86,25 @@ export default function KnowledgeBasePage() {
         lastUpdated: new Date(),
       };
       setSources(prev => [...prev, tempSource]);
-
-      // Read file content
-      const text = await file.text();
-
-      // Send to your API route with the correct format
+  
+      // Use FormData to properly handle binary files
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('fileName', file.name);
+      formData.append('userId', user.id);
+  
+      // Send to your API route using FormData
       const response = await fetch('/api/knowledge-base/upload', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          content: text,
-          fileName: file.name,
-          userId: user.id
-        }),
+        body: formData,
       });
-
+  
       if (!response.ok) {
         throw new Error('Failed to upload file');
       }
-
+  
       const result = await response.json();
-
+  
       // Update source status
       setSources(prev =>
         prev.map(source =>
@@ -117,7 +113,7 @@ export default function KnowledgeBasePage() {
             : source
         )
       );
-
+  
       toast.success('File processed and added to knowledge base!');
     } catch (error) {
       console.error('Error uploading file:', error);

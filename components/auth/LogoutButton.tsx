@@ -1,12 +1,19 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
+import { createPortal } from 'react-dom';
 
 export default function LogoutButton() {
   const [showConfirm, setShowConfirm] = useState(false);
   const router = useRouter();
   const supabase = createClientComponentClient();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -37,7 +44,7 @@ export default function LogoutButton() {
       </button>
 
       {/* Confirmation Dialog */}
-      {showConfirm && (
+      {showConfirm && mounted && createPortal(
         <div className="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
           <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             {/* Background overlay */}
@@ -82,7 +89,9 @@ export default function LogoutButton() {
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
+
       )}
     </>
   );
